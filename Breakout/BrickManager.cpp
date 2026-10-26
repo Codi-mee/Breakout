@@ -6,20 +6,32 @@ BrickManager::BrickManager(sf::RenderWindow* window, GameManager* gameManager)
 {
 }
 
-void BrickManager::createBricks(int rows, int cols, float brickWidth, float brickHeight, float spacing)
+void BrickManager::createBricks(int rows, int cols, float brickWidth, float brickHeight, float spacingWidth, float spacingHeight)
 {
     float leftEdge;
+    bool invertBlocks = false;
+
     if (cols % 2 == 0) 
-        leftEdge = _window->getSize().x / 2 - ((cols / 2.0f) * brickWidth + (cols / 2.0f - 0.5f) * spacing);
+        leftEdge = _window->getSize().x / 2 - ((cols / 2.0f) * brickWidth + (cols / 2.0f - 0.5f) * spacingWidth);
     else
-        leftEdge = _window->getSize().x / 2 - ((cols / 2.0f - 0.5f) * brickWidth + (cols / 2.0f) * spacing);
+        leftEdge = _window->getSize().x / 2 - ((cols / 2.0f - 0.5f) * brickWidth + (cols / 2.0f) * spacingWidth);
 
     for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            float x = j * (brickWidth + spacing) + leftEdge;
-            float y = i * (brickHeight + spacing) + TOP_PADDING;
-            _bricks.emplace_back(x, y, brickWidth, brickHeight);
+        if (!invertBlocks) {
+            for (int j = 0; j < cols; ++j) {
+                float x = j * (brickWidth + spacingWidth) + leftEdge;
+                float y = i * (brickHeight + spacingHeight) + TOP_PADDING;
+                _bricks.emplace_back(x, y, brickWidth, brickHeight);
+            }
         }
+        else {
+            for (int j = 0; j < cols - 1; ++j) {
+                float x = j * (brickWidth + spacingWidth) + +brickWidth + leftEdge;
+                float y = i * (brickHeight + spacingHeight) + TOP_PADDING;
+                _bricks.emplace_back(x, y, brickWidth, brickHeight);
+            }
+        }
+        invertBlocks = !invertBlocks;
     }
 }
 

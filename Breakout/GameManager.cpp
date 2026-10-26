@@ -25,7 +25,7 @@ void GameManager::initialize()
     _ui = new UI(_window, _lives, this);
 
     // Create bricks
-    _brickManager->createBricks(5, 10, 80.0f, 30.0f, 5.0f);
+    _brickManager->createBricks(7, 5, 80.0f, 30.0f, 80.0f, 10.0f);
 }
 
 void GameManager::update(float dt)
