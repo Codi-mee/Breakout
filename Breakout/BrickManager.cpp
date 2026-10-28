@@ -26,12 +26,51 @@ void BrickManager::createBricks(int rows, int cols, float brickWidth, float bric
         }
         else {
             for (int j = 0; j < cols - 1; ++j) {
-                float x = j * (brickWidth + spacingWidth) + +brickWidth + leftEdge;
+                float x = j * (brickWidth + spacingWidth) + brickWidth + leftEdge;
                 float y = i * (brickHeight + spacingHeight) + TOP_PADDING;
                 _bricks.emplace_back(x, y, brickWidth, brickHeight);
             }
         }
         invertBlocks = !invertBlocks;
+    }
+
+}
+
+void BrickManager::update(float dt) {
+
+    for (auto& brick : _bricks) {
+
+        if (_movingLeft) {
+            brick.setPosition(brick.getPosition().x - (_brickSpeed * dt), brick.getPosition().y);
+        }
+        else {
+            brick.setPosition(brick.getPosition().x + (_brickSpeed * dt), brick.getPosition().y);
+        }
+
+    }
+
+    bool touchingEdge = false;
+    if (_movingLeft) {
+        for (auto& brick : _bricks) {
+            if (brick.getBounds().left <= 0.f) {
+                touchingEdge = true;
+            }
+        }
+    }
+    else {
+        for (auto& brick : _bricks) {
+            if (brick.getBounds().left + brick.getBounds().width >= _window->getSize().x) {
+                touchingEdge = true;
+            }
+        }
+    }
+
+    if (touchingEdge) { 
+        _movingLeft = !_movingLeft;
+        _brickSpeed += _brickAcceleration;
+        for (auto& brick : _bricks) {
+            brick.setPosition(brick.getPosition().x, brick.getPosition().y + _lapHeightDecrease);
+        }
     }
 }
 
@@ -69,4 +108,10 @@ int BrickManager::checkCollision(sf::CircleShape& ball, sf::Vector2f& direction)
         _gameManager->levelComplete();
     }
     return collisionResponse;
+}
+
+void BrickManager::setParameters(float s, float h, float a) {
+    _brickSpeed = s;
+    _lapHeightDecrease = h;
+    _brickAcceleration = a;
 }

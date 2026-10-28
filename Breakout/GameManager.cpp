@@ -26,6 +26,7 @@ void GameManager::initialize()
 
     // Create bricks
     _brickManager->createBricks(7, 5, 80.0f, 30.0f, 80.0f, 10.0f);
+    _brickManager->setParameters(40.f, 10.f, 10.f);
 }
 
 void GameManager::update(float dt)
@@ -82,6 +83,7 @@ void GameManager::update(float dt)
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) _paddle->moveLeft(dt);
 
     // update everything 
+    _brickManager->update(dt);
     _paddle->update(dt);
     _ball->update(dt);
     _powerupManager->update(dt);
